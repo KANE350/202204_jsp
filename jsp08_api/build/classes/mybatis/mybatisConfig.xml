@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">	  <!--configuration에 대한 정의들  -->
+<configuration>
+	<!-- 매퍼에서 값을 매핑할때 필드의 값 null허용 -->
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>		<!--자바가컨넥션하는 데이터의 타입(jdbc)을 널로 허용하겠다-->
+	
+	<!--db접속 정보들-->
+  <environments default="development">
+    <environment id="development">
+	    <!-- MANAGED: 컨테이너가 트랙잭션을 관리하겠다 -->
+    	<!-- JDBC : 이렇게 변경하면 commit을 자동으로 해주지 않고 마이바티스 세션에서(소스) 따로 관리하게 된다. 
+    떄문에 추가하면 반드시 커밋을 개별로 해줘야 한다. dao에서 커밋코드 작성 -->
+      <transactionManager type="JDBC"/>
+      <!--UNPOOLED: 컨넥션풀을 사용하지 않겠다. 즉 요청할때 넘기겠다.  -->
+      <dataSource type="POOLED">			
+        <property name="driver" value="oracle.jdbc.driver.OracleDriver"/>
+        <property name="url" value="jdbc:oracle:thin:@localhost:1521:xe"/>
+        <property name="username" value="hr"/>
+        <property name="password" value="hr"/>
+      </dataSource>
+    </environment>
+  </environments>
+  <!--매퍼파일들 매핑-->
+	<mappers>
+		<mapper resource="mybatis/CovidMapper.xml"/>
+		<mapper resource="mybatis/CountryMapper.xml"/>
+		<mapper resource="mybatis/EventMapper.xml"/>
+		<mapper resource="mybatis/DustMapper.xml"/>
+	<!-- 만약 매퍼파일이 10개라면, 10개에 대한 매퍼파일을 모두 만들어주어야 한다. -->
+	</mappers>
+
+</configuration>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace ="BoardfileMapper">
+ 	<insert id="insert">
+ 	INSERT INTO boardfile(bfnum,bnum,filename)
+	VALUES (s_bfnum.nextval, #{bnum}, #{filename})
+ 	</insert> 
+ 	
+ 	<update id="update">
+  	UPDATE boardfile
+	SET filename = #{filename}
+	WHERE bfnum = #{bfnum}
+	<!--코드상은 문제가 없지만 실제적용한다고 쳤을떄 게시물 변경이 일어나서는 안되므로 bnum은 빼고 수정  -->
+  	</update>
+  	
+  	<delete id="delete">
+  	DELETE FROM boardfile
+	WHERE bfnum = #{bfnum} 	
+  	</delete>
+  	
+  	<delete id="delete_bnum">
+  	DELETE FROM boardfile
+	WHERE bnum = #{bnum}
+  	</delete>
+  	
+	<select id="selectOne" resultType="dto.Boardfile">
+		SELECT * FROM boardfile
+		WHERE bfnum = #{bfnum}
+	</select>
+
+  	<select id="selectList" resultType="dto.Boardfile" >
+  	select * from boardfile
+	WHERE bnum = #{bnum}
+  	</select>
+ 		
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+ 	
+  </mapper>
+  

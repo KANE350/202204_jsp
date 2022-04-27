@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="DustMapper">
+	<insert id="insert">   	<!--작성 후 dao로 간다.-->
+		INSERT INTO dust(
+		sn, 
+		clearVal, 
+		districtName,
+		dataDate,
+		issueVal,
+		issueTime, 
+		clearDate, 
+		issueDate, 
+		moveName, 
+		clearTime, 
+		issueGbn, 
+		itemCode 
+		)
+	VALUES(
+		#{sn},
+		#{clearVal},
+		#{districtName},
+		#{dataDate},
+		#{issueVal},
+		#{issueTime},
+		#{clearDate},
+		#{issueDate},
+		#{moveName},
+		#{clearTime},
+		#{issueGbn},
+		#{itemCode}
+		)
+	</insert>
+	
+	<select id="selectList" resultType="java.util.Map">	
+	SELECT * FROM dust
+	WHERE districtName = #{districtName}   
+	ORDER by datadate DESC
+	</select>
+	
+	
+	
+</mapper>

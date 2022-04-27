@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CountryMapper">
+	<!--iso 리스트-->
+	<select id="selectList_iso" resultType="java.util.Map"> <!--dto.ISO를 생성하지 않았으니 Map을 대신 작성한다. Map도 클래스 개념이기 떄문에 경로명을 같이 작성해주면 된다. -->
+	SELECT * FROM iso
+	ORDER BY name
+	</select>
+
+	<select id="selectList" resultType="dto.Country">
+		SELECT * FROM country
+		WHERE country_iso_alp2 = #{iso}	<!--뷰에서 넘길때 이름을 똑같이 맞추기 위함-->
+	</select>								<!--셀렉트네임의 이름을 여기에 넣어라-->
+	
+	<select id="selectOne" resultType="dto.Country">	
+		SELECT * FROM country
+		WHERE sfty_notice_id=#{sfty_notice_id}
+	</select>
+	
+	<!--country insert-->
+	<insert id="insert" parameterType="java.util.Map">
+		INSERT INTO country(
+		sfty_notice_id,
+		continent_cd,
+		continent_eng_nm,
+		continent_nm,
+		country_iso_alp2,
+		country_eng_nm,
+		country_nm,
+		title,
+		file_cnt,
+		file_download_url,
+		file_path,
+		html_origin_cn,
+		txt_origin_cn,
+		wrt_dt)
+	VALUES(
+		#{sfty_notice_id},
+		#{continent_cd},
+		#{continent_eng_nm},
+		#{continent_nm},
+		#{country_iso_alp2},
+		#{country_eng_nm},
+		#{country_nm},
+		#{title},
+		#{file_cnt},
+		#{file_download_url},
+		#{file_path},
+		#{html_origin_cn},
+		#{txt_origin_cn},
+		#{wrt_dt}
+	)
+	</insert>
+	
+	<update id="update">
+	UPDATE country 
+	SET 
+	continent_cd = #{continent_cd},
+	continent_eng_nm = #{continent_eng_nm},
+	continent_nm= #{continent_nm},
+	country_iso_alp2= #{country_iso_alp2},
+	country_eng_nm= #{country_eng_nm},
+	country_nm= #{country_nm},
+	title= #{title},
+	file_cnt= #{file_cnt},
+	file_download_url= #{file_download_url},
+	file_path= #{file_path},
+	html_origin_cn= #{html_origin_cn},
+	txt_origin_cn= #{txt_origin_cn},
+	wrt_dt= #{wrt_dt}
+	WHERE sfty_notice_id =#{sfty_notice_id}
+	</update>
+	
+
+</mapper>

@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="BoardMapper">
+	<insert id="insert" parameterType="dto.Board">
+		<!-- insert문을 실행하기 전에 board의 bnum필드의 setter 실행 -->
+		<selectKey keyProperty="bnum" resultType="int" order="BEFORE" >	<!--selectKey란? 먼저 원하는 문장을 써서 저장할 수 있다. bnum에 먼저 번호를 저장해두겠다.-->
+		SELECT s_bnum.nextval FROM dual
+		<!--임베리드 캐릭터에는 세미콜론을 붙이지 말것 -->
+		</selectKey>
+		INSERT INTO board(bnum,userid,subject,content,ip)
+		VALUES (#{bnum}, #{userid}, #{subject}, #{content}, #{ip})	
+		<!--s_bnum.nextval대신 bnum 입력, 위에서 따로 실행시켰기 떄문이다.  -->
+	</insert>
+	
+	<update id="update">
+		UPDATE board
+		SET userid =#{userid},
+			subject = #{subject},
+			content =#{content},
+			ip = #{ip}
+		WHERE bnum = #{bnum}
+	</update>
+	
+	<!-- 게시물의 조회수를 +1  -->
+	<update id="update_readcnt">
+	UPDATE board
+	SET readcnt = readcnt + 1
+	WHERE bnum = #{bnum}
+	</update>	<!--작성 후 dao로 넘어가서 실행할 수 있도록 코드 작성-->
+	
+	
+	<delete id="delete">
+		DELETE FROM board
+		WHERE bnum = #{bnum}
+	</delete>	
+	
+	<!-- dto의 경로명까지 포함해서 resultTrype 매핑 -->
+	<select id="selectOne" resultType="dto.Board">
+	<!-- 셀렉트의 경우 속성값을 꼭 작성해 주어야 한다.
+		Board만 작성할 경우 컴퓨터가 위치를 찾지 못하기 때문에 경로를
+		(패키지명) 적어주어야 한다. 
+		 마이 바티스 에러 확인할 떄는 맨 뒤를 확인하자. -->
+	SELECT * FROM board
+	WHERE bnum = #{bnum}
+	</select>
+	
+	<!-- $ :데이터 자체만 연결
+	#: $ 데이터의 형에 따라 ' 여부가 결정된다.-->
+	<select id="selectList" resultType="dto.Board">
+		SELECT * 
+		FROM(SELECT ROWNUM rnum, b.*  
+		        FROM(SELECT*FROM board
+		                WHERE ${findkey} LIKE '%' || #{findvalue} || '%'  
+		                  ORDER BY bnum DESC) b)       
+		 WHERE rnum BETWEEN #{startnum} AND #{endnum}			<!--번호가 가장 최신인것부터 나온다  -->
+	</select>
+	
+	<!--전체 게시물 수-->
+	<select id="select_totalcnt" resultType="int">	<!--조회타입이 리스트가 아니라 숫자 하나이기 떄문에 int사용-->
+	SELECT COUNT(*) totalCnt FROM board
+	WHERE ${findkey} LIKE '%' || #{findvalue} || '%'  			<!--해당하는 것만 내어준다. 있는 자료까지만 페이지수를 나타내게 하기 위한 코드  -->
+	</select>
+	
+	<!--findkey에 따옴표를 붙이지 않고 바로 연결해야 하기 때문에 $를 붙이고 findvalue는 문자열이어서 따옴표를 붙여야 하기 때문에 작성한다.  -->
+	<!--dto가 없기 때문에 findvalue를 넣으면 findvalue라는 변수명이 대신 세팅하준다  -->
+	
+</mapper>

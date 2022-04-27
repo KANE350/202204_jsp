@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">	
+<mapper namespace="ReplyMapper">
+	<insert id="insert" >
+		INSERT INTO reply(rnum, bnum ,content, restep, relevel)
+		VALUES(s_rnum.nextval, #{bnum}, #{content}, #{restep},#{relevel})		<!--#{bnum}는 리플라이 게터가 실행되는 것이지, 위의 bnum이 아니다.-->
+	</insert>
+	
+	<update id="update">
+		UPDATE reply
+		SET content = #{content}
+		WHERE rnum = #{rnum}
+	</update>
+	
+	<!-- 글순서 재수정 -->
+  	<update id="update_restep">
+  		UPDATE reply
+		SET restep = restep+1
+		WHERE bnum = #{bnum}
+		AND restep >= #{restep}
+  	</update>
+
+	<delete id="delete">
+		DELETE FROM reply
+		WHERE rnum = #{rnum}
+	</delete>
+
+	<!--게시물 한 건의 모든 댓글 삭제-->
+	<delete id="delete_bnum">
+	DELETE FROM reply
+	WHERE bnum = #{bnum}
+	</delete>
+	
+	<select id="selectOne" resultType="dto.Reply">		<!--리턴값이 달라지기 때문에 리절트 타입을 담는다(리턴값은 dto의 리플라이) 패키지이기 때문에 .으로 소환한다.-->
+		select * from reply
+		WHERE rnum = #{rnum}
+	</select>
+	
+	<select id="selectList" resultType="dto.Reply">		<!--맵에 담을거냐 리플라이에 담을거냐를 결정해야 한다.-->
+		select * from reply
+		where bnum = #{bnum}
+		ORDER BY restep
+	</select>
+	
+</mapper>  
